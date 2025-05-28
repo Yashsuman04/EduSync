@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Project 1\\Project\\Backendapi\\Backendapi.csproj": {}
+    "D:\\EduSync\\Backendapi\\Backendapi.csproj": {}
   },
   "projects": {
-    "D:\\Project 1\\Project\\Backendapi\\Backendapi.csproj": {
+    "D:\\EduSync\\Backendapi\\Backendapi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project 1\\Project\\Backendapi\\Backendapi.csproj",
+        "projectUniqueName": "D:\\EduSync\\Backendapi\\Backendapi.csproj",
         "projectName": "Backendapi",
-        "projectPath": "D:\\Project 1\\Project\\Backendapi\\Backendapi.csproj",
+        "projectPath": "D:\\EduSync\\Backendapi\\Backendapi.csproj",
         "packagesPath": "C:\\Users\\yashs\\.nuget\\packages\\",
-        "outputPath": "D:\\Project 1\\Project\\Backendapi\\obj\\",
+        "outputPath": "D:\\EduSync\\Backendapi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

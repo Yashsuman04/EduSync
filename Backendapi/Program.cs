@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Swashbuckle.AspNetCore.SwaggerUI;
-
+using Microsoft.ApplicationInsights.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +31,7 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddApplicationInsightsUsers();
+builder.Services.AddApplicationInsightsTelemetry();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
