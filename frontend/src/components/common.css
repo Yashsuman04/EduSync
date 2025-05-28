@@ -1,0 +1,100 @@
+.navbar{
+    height: 70px;
+}
+
+.font-color{
+    color: #332D56 !important;
+    text-decoration: none;
+}
+
+.font{
+    font-family: "Share Tech";
+}
+.bold{
+    font-weight: 700 !important;
+}
+.custom-outline {
+    border: 2px solid #332D56;
+    color: #332D56;
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+
+.custom-filled {
+    background-color: #332D56;
+    border: 2px solid #332D56;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.custom-outline-filled {
+    border: 2px solid #332D56;
+    color: #332D56;
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.custom-outline-filled:hover {
+    background-color: #332D56;
+    color: white;
+}
+
+.custom-outline,
+.custom-filled,
+.custom-outline-filled {
+    padding: 0.5rem 1.2rem !important;
+    font-weight: 500 !important;
+    border-radius: 0.375rem !important;
+    display: inline-block !important;
+    text-align: center !important;
+    text-decoration: none !important;
+}
+
+body,
+.container-fluid,
+.row {
+    margin-top: 0 !important;
+    padding-top: 0 !important; 
+}
+
+.custom-input:focus {
+    border: 2px solid #332D56 !important;
+    border-radius: 0.5rem;
+}
+
+.no-focus-shadow:focus {
+    box-shadow: none !important;
+    outline: none !important; 
+}
+
+.login-btn, .register-btn {
+    background-color: #332D56;
+    border: 2px solid #332D56;
+    color: white;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1.2rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+}
+
+.flex-grow-1 {
+    background-color: white !important;
+}
+
+.bg-black{
+    background-color: #FFF !important;
+    color: #332D56 !important;
+}
+
+.card{
+    border-radius: 20px !important;
+    border: 1.5px solid #332D56 !important;
+}
+
+input[type="radio"] {
+    accent-color: #332D56;
+}
