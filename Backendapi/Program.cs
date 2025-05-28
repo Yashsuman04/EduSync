@@ -113,6 +113,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.EnableSensitiveDataLogging(); // Detailed EF logs
 });
 
+builder.Services.AddSingleton<AzureStorageService>();
+
 var app = builder.Build();
 
 // Enable detailed error page in Development

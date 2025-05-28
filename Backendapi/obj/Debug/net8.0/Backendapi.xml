@@ -133,5 +133,17 @@
         <member name="M:Backendapi.Migrations.AddAssessmentAndStudentToStudentAnswer.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:Backendapi.Migrations.AddMaterialFieldsToCourse">
+            <inheritdoc />
+        </member>
+        <member name="M:Backendapi.Migrations.AddMaterialFieldsToCourse.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Backendapi.Migrations.AddMaterialFieldsToCourse.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Backendapi.Migrations.AddMaterialFieldsToCourse.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
     </members>
 </doc>

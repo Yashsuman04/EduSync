@@ -20,6 +20,10 @@ public partial class Course
 
     public string? CourseUrl { get; set; }
 
+    public string? MaterialFileName { get; set; }
+
+    public string? MaterialUrl { get; set; }
+
     public virtual ICollection<Assessment> Assessments { get; set; } = new List<Assessment>();
 
     // Instructor who created the course

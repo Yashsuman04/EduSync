@@ -138,6 +138,8 @@ namespace Backendapi.Controllers
                 course.InstructorId = courseDto.InstructorId;
                 course.MediaUrl = courseDto.MediaUrl;
                 course.CourseUrl = courseDto.CourseUrl;
+                course.MaterialFileName = courseDto.MaterialFileName;
+                course.MaterialUrl = courseDto.MaterialUrl;
 
                 await _context.SaveChangesAsync();
                 _telemetryClient.TrackEvent("CourseUpdated", new Dictionary<string, string> { { "CourseId", id.ToString() } });
@@ -191,7 +193,9 @@ namespace Backendapi.Controllers
                     Description = courseDto.Description,
                     InstructorId = courseDto.InstructorId,
                     MediaUrl = courseDto.MediaUrl,
-                    CourseUrl = processedCourseUrl
+                    CourseUrl = processedCourseUrl,
+                    MaterialFileName = courseDto.MaterialFileName,
+                    MaterialUrl = courseDto.MaterialUrl
                 };
 
                 _logger.LogInformation($"Created course object: {JsonSerializer.Serialize(course)}");
@@ -216,7 +220,9 @@ namespace Backendapi.Controllers
                     description = course.Description,
                     instructorId = course.InstructorId,
                     mediaUrl = course.MediaUrl,
-                    courseUrl = course.CourseUrl
+                    courseUrl = course.CourseUrl,
+                    materialFileName = course.MaterialFileName,
+                    materialUrl = course.MaterialUrl
                 });
             }
             catch (Exception ex)

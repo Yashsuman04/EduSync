@@ -11,6 +11,8 @@ namespace finalpracticeproject.DTOs
         public Guid? InstructorId { get; set; }
         public string? MediaUrl { get; set; }
         public string? CourseUrl { get; set; }
+        public string? MaterialFileName { get; set; }
+        public string? MaterialUrl { get; set; }
 
         // Don't include Assessments or full User objects in DTO
     }

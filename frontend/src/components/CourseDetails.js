@@ -3,6 +3,8 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import AvailabeAssessment from "./AvailableAssessments";
+import { Worker, Viewer } from "@react-pdf-viewer/core";
+import "@react-pdf-viewer/core/lib/styles/index.css";
 
 const CourseDetails = () => {
   const { courseId } = useParams();
@@ -14,6 +16,10 @@ const CourseDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
+  const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
+  const [previewSasUrl, setPreviewSasUrl] = useState("");
+  const [showPreview, setShowPreview] = useState(false);
 
   const handleDeleteAssessment = async (assessmentId) => {
     try {
@@ -49,6 +55,28 @@ const CourseDetails = () => {
     }
   };
 
+  const handleMaterialDownload = async () => {
+    setDownloading(true);
+    setDownloadError("");
+    try {
+      if (!course.materialFileName)
+        throw new Error("No study material available");
+      const response = await fetch(
+        `http://localhost:7197/api/file/sas/${encodeURIComponent(
+          course.materialFileName
+        )}`
+      );
+      if (!response.ok) throw new Error("Failed to get download link");
+      const data = await response.json();
+      console.log("SAS URL response:", data);
+      window.open(data.sasUrl, "_blank");
+    } catch (err) {
+      setDownloadError(err.message);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchCourseDetails = async () => {
       try {
@@ -73,7 +101,41 @@ const CourseDetails = () => {
         }
 
         const courseData = await courseResponse.json();
+        console.log("Fetched course data:", courseData);
+        console.log("Material file name:", courseData.materialFileName);
         setCourse(courseData);
+
+        // Fetch SAS URL for preview if materialFileName exists and is PDF
+        if (
+          courseData.materialFileName &&
+          courseData.materialFileName.toLowerCase().endsWith(".pdf")
+        ) {
+          try {
+            console.log("Fetching SAS URL for preview...");
+            const sasRes = await fetch(
+              `http://localhost:7197/api/file/sas/${encodeURIComponent(
+                courseData.materialFileName
+              )}`
+            );
+            if (sasRes.ok) {
+              const sasData = await sasRes.json();
+              console.log("SAS URL response:", sasData);
+              setPreviewSasUrl(sasData.sasUrl);
+            } else {
+              console.error(
+                "Failed to fetch SAS URL:",
+                sasRes.status,
+                sasRes.statusText
+              );
+              setPreviewSasUrl("");
+            }
+          } catch (err) {
+            console.error("Error fetching SAS URL:", err);
+            setPreviewSasUrl("");
+          }
+        } else {
+          setPreviewSasUrl("");
+        }
 
         // Fetch assessments for the course
         const assessmentsResponse = await fetch(
@@ -178,6 +240,30 @@ const CourseDetails = () => {
       document.body.removeChild(link);
     }
   };
+
+  function PdfPreview({ sasUrl }) {
+    return (
+      <Worker
+        workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}
+      >
+        <Viewer fileUrl={sasUrl} />
+      </Worker>
+    );
+  }
+
+  function DocPreview({ sasUrl }) {
+    const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(
+      sasUrl
+    )}&embedded=true`;
+    return (
+      <iframe
+        src={viewerUrl}
+        width="100%"
+        height="600px"
+        title="DOCX Preview"
+      />
+    );
+  }
 
   if (loading) {
     return (
@@ -345,6 +431,76 @@ const CourseDetails = () => {
                 <h4 className="card-title mb-4 font-color font">
                   Course Content
                 </h4>
+                {console.log(
+                  "Content tab active, materialFileName:",
+                  course.materialFileName
+                )}
+                {course.materialFileName && (
+                  <div className="mb-4">
+                    <h5>Study Material</h5>
+                    <p>Available file: {course.materialFileName}</p>
+                    <button
+                      className="btn btn-outline-primary"
+                      onClick={handleMaterialDownload}
+                      disabled={downloading}
+                    >
+                      <i className="bi bi-download me-2"></i>
+                      {downloading
+                        ? "Preparing download..."
+                        : "Download Study Material"}
+                    </button>
+                    {downloadError && (
+                      <div className="text-danger mt-2">{downloadError}</div>
+                    )}
+                    {previewSasUrl &&
+                      course.materialFileName
+                        .toLowerCase()
+                        .endsWith(".pdf") && (
+                        <div className="mt-3">
+                          <h6>Preview:</h6>
+                          {showPreview ? (
+                            <PdfPreview sasUrl={previewSasUrl} />
+                          ) : (
+                            <div
+                              className="border p-3 text-center cursor-pointer"
+                              onClick={() => setShowPreview(true)}
+                            >
+                              <i className="bi bi-file-pdf me-2"></i>
+                              Click to preview PDF
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    {previewSasUrl &&
+                      course.materialFileName
+                        .toLowerCase()
+                        .endsWith(".docx") && (
+                        <div className="mt-3">
+                          <h6>Preview:</h6>
+                          {showPreview ? (
+                            <DocPreview sasUrl={previewSasUrl} />
+                          ) : (
+                            <div
+                              className="border p-3 text-center cursor-pointer"
+                              onClick={() => setShowPreview(true)}
+                            >
+                              <i className="bi bi-file-word me-2"></i>
+                              Click to preview DOCX
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    {previewSasUrl &&
+                      !course.materialFileName.toLowerCase().endsWith(".pdf") &&
+                      !course.materialFileName
+                        .toLowerCase()
+                        .endsWith(".docx") && (
+                        <div className="mt-3">
+                          <p>Preview not available for this file type.</p>
+                        </div>
+                      )}
+                  </div>
+                )}
                 {course.courseUrl && (
                   <div className="mb-4">
                     <div className="ratio ratio-16x9">

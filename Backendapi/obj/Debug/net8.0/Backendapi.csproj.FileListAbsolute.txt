@@ -879,3 +879,7 @@ D:\EduSync\Backendapi\obj\Debug\net8.0\Backendapi.xml
 D:\EduSync\Backendapi\obj\Debug\net8.0\Backendapi.pdb
 D:\EduSync\Backendapi\obj\Debug\net8.0\Backendapi.genruntimeconfig.cache
 D:\EduSync\Backendapi\obj\Debug\net8.0\ref\Backendapi.dll
+D:\EduSync\Backendapi\bin\Debug\net8.0\Azure.Storage.Blobs.dll
+D:\EduSync\Backendapi\bin\Debug\net8.0\Azure.Storage.Common.dll
+D:\EduSync\Backendapi\bin\Debug\net8.0\System.ClientModel.dll
+D:\EduSync\Backendapi\bin\Debug\net8.0\System.IO.Hashing.dll
