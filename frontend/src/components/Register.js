@@ -14,6 +14,7 @@ const Register = () => {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { register } = useAuth();
 
@@ -23,6 +24,10 @@ const Register = () => {
       ...prevState,
       [name]: value,
     }));
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (e) => {
@@ -43,7 +48,14 @@ const Register = () => {
           : "/student-dashboard"
       );
     } catch (err) {
-      setError(err.message || "Registration failed. Please try again.");
+      // Handle different types of errors
+      if (err.message.includes("User already exists")) {
+        setError("An account with this email already exists");
+      } else if (err.message.includes("JSON")) {
+        setError("Registration failed. Please try again.");
+      } else {
+        setError(err.message || "Registration failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -77,7 +89,22 @@ const Register = () => {
                 </h2>
 
                 {error && (
-                  <div className="alert alert-danger" role="alert">
+                  <div
+                    className="alert alert-danger mb-4"
+                    role="alert"
+                    style={{
+                      backgroundColor: "#fff3f3",
+                      border: "1px solid #ffcdd2",
+                      color: "#d32f2f",
+                      borderRadius: "8px",
+                      padding: "12px 16px",
+                      fontSize: "14px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <i className="bi bi-exclamation-circle-fill"></i>
                     {error}
                   </div>
                 )}
@@ -117,9 +144,9 @@ const Register = () => {
                     </label>
                   </div>
 
-                  <div className="form-floating mb-3">
+                  <div className="form-floating mb-3 position-relative">
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       className="form-control custom-input no-focus-shadow"
                       id="password"
                       name="password"
@@ -132,6 +159,16 @@ const Register = () => {
                     <label htmlFor="password" style={{ color: "#332D56" }}>
                       Password
                     </label>
+                    <button
+                      type="button"
+                      className="btn btn-link position-absolute end-0 top-50 translate-middle-y"
+                      onClick={togglePasswordVisibility}
+                      style={{ color: "#332D56", textDecoration: "none" }}
+                    >
+                      <i
+                        className={`bi bi-eye${showPassword ? "-slash" : ""}`}
+                      ></i>
+                    </button>
                   </div>
 
                   <div className="form-floating mb-4">
@@ -163,9 +200,9 @@ const Register = () => {
 
                 <div className="text-center mt-3">
                   <p className="text-secondary">
-                    Already have an account? {" "}
+                    Already have an account?{" "}
                     <Link
-                      to = "/login"
+                      to="/login"
                       className="text-decoration-none font-color"
                     >
                       Login here

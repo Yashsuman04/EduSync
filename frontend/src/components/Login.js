@@ -15,6 +15,7 @@ const Login = () => {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -24,6 +25,10 @@ const Login = () => {
       ...prevState,
       [name]: value,
     }));
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (e) => {
@@ -50,9 +55,19 @@ const Login = () => {
         navigate("/student-dashboard");
       }
     } catch (err) {
-      setError(
-        err.message || "An error occurred during login. Please try again."
-      );
+      // Handle different types of errors
+      if (
+        err.message.includes("Wrong password") ||
+        err.message.includes("User not found")
+      ) {
+        setError("Wrong email or password");
+      } else if (err.message.includes("JSON")) {
+        setError("Wrong email or password");
+      } else {
+        setError(
+          err.message || "An error occurred during login. Please try again."
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -85,6 +100,28 @@ const Login = () => {
                   >
                     Login in your learning platform
                   </h2>
+
+                  {error && (
+                    <div
+                      className="alert alert-danger mb-4"
+                      role="alert"
+                      style={{
+                        backgroundColor: "#fff3f3",
+                        border: "1px solid #ffcdd2",
+                        color: "#d32f2f",
+                        borderRadius: "8px",
+                        padding: "12px 16px",
+                        fontSize: "14px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <i className="bi bi-exclamation-circle-fill"></i>
+                      {error}
+                    </div>
+                  )}
+
                   <form onSubmit={handleSubmit}>
                     <div className="form-floating mb-3">
                       <input
@@ -100,9 +137,9 @@ const Login = () => {
                       <label htmlFor="email">Email</label>
                     </div>
 
-                    <div className="form-floating mb-3">
+                    <div className="form-floating mb-3 position-relative">
                       <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         className="form-control custom-input no-focus-shadow"
                         id="password"
                         name="password"
@@ -112,6 +149,16 @@ const Login = () => {
                         required
                       />
                       <label htmlFor="password">Password</label>
+                      <button
+                        type="button"
+                        className="btn btn-link position-absolute end-0 top-50 translate-middle-y"
+                        onClick={togglePasswordVisibility}
+                        style={{ color: "#332D56", textDecoration: "none" }}
+                      >
+                        <i
+                          className={`bi bi-eye${showPassword ? "-slash" : ""}`}
+                        ></i>
+                      </button>
                     </div>
 
                     <button

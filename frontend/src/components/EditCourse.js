@@ -248,9 +248,12 @@ const EditCourse = () => {
                 {materialUploadProgress > 0 && (
                   <div className="progress mt-2">
                     <div
-                      className="progress-bar"
+                      className="progress-bar "
                       role="progressbar"
-                      style={{ width: `${materialUploadProgress}%` }}
+                      style={{
+                        width: `${materialUploadProgress}%`,
+                        backgroundColor: "#332D56",
+                      }}
                       aria-valuenow={materialUploadProgress}
                       aria-valuemin="0"
                       aria-valuemax="100"

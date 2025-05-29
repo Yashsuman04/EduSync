@@ -442,26 +442,13 @@ const CourseDetails = () => {
                     </li>
                   </ul>
                 </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === "content" && (
-            <div className="card border-0 shadow-sm bg-white m-4">
-              <div className="card-body">
-                <h4 className="card-title mb-4 font-color font">
-                  Course Content
-                </h4>
-                {console.log(
-                  "Content tab active, materialFileName:",
-                  course.materialFileName
-                )}
+                <br />
                 {course.materialFileName && (
                   <div className="mb-4">
                     <h5>Study Material</h5>
-                    <p>Available file: {course.materialFileName}</p>
+                    <p>File: {course.materialFileName}</p>
                     <button
-                      className="btn btn-outline-primary"
+                      className="custom-outline-filled"
                       onClick={handleMaterialDownload}
                       disabled={downloading}
                     >
@@ -477,15 +464,16 @@ const CourseDetails = () => {
                       course.materialFileName
                         .toLowerCase()
                         .endsWith(".pdf") && (
-                        <div className="mt-3">
+                        <div
+                          className="mt-3"
+                          onClick={() => setShowPreview(true)}
+                          style={{ cursor: "pointer" }}
+                        >
                           <h6>Preview:</h6>
                           {showPreview ? (
                             <PdfPreview sasUrl={previewSasUrl} />
                           ) : (
-                            <div
-                              className="border p-3 text-center cursor-pointer"
-                              onClick={() => setShowPreview(true)}
-                            >
+                            <div className="border p-3 text-center cursor-pointer">
                               <i className="bi bi-file-pdf me-2"></i>
                               Click to preview PDF
                             </div>
@@ -496,15 +484,16 @@ const CourseDetails = () => {
                       course.materialFileName
                         .toLowerCase()
                         .endsWith(".docx") && (
-                        <div className="mt-3">
+                        <div
+                          className="mt-3"
+                          onClick={() => setShowPreview(true)}
+                          style={{ cursor: "pointer" }}
+                        >
                           <h6>Preview:</h6>
                           {showPreview ? (
                             <DocPreview sasUrl={previewSasUrl} />
                           ) : (
-                            <div
-                              className="border p-3 text-center cursor-pointer"
-                              onClick={() => setShowPreview(true)}
-                            >
+                            <div className="border p-3 text-center cursor-pointer">
                               <i className="bi bi-file-word me-2"></i>
                               Click to preview DOCX
                             </div>
@@ -522,6 +511,16 @@ const CourseDetails = () => {
                       )}
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {activeTab === "content" && (
+            <div className="card border-0 shadow-sm bg-white m-4">
+              <div className="card-body">
+                <h4 className="card-title mb-4 font-color font">
+                  Course Content
+                </h4>
                 {course.courseUrl && (
                   <div className="mb-4">
                     <div className="ratio ratio-16x9">
