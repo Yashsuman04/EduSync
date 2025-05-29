@@ -99,7 +99,7 @@ namespace Backendapi.Controllers
                     return NotFound();
                 }
 
-                return course;
+                return Ok(course);
             }
             catch (Exception ex)
             {

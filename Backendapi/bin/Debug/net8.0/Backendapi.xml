@@ -145,5 +145,17 @@
         <member name="M:Backendapi.Migrations.AddMaterialFieldsToCourse.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:Backendapi.Migrations.UpdateStudentAnswerCascadeDelete">
+            <inheritdoc />
+        </member>
+        <member name="M:Backendapi.Migrations.UpdateStudentAnswerCascadeDelete.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Backendapi.Migrations.UpdateStudentAnswerCascadeDelete.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Backendapi.Migrations.UpdateStudentAnswerCascadeDelete.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
     </members>
 </doc>

@@ -161,13 +161,12 @@ const Register = () => {
                   </button>
                 </form>
 
-                <div className="text-center mt-3" style={{ color: "#332D56" }}>
-                  <p>
-                    Already have an account?{" "}
+                <div className="text-center mt-3">
+                  <p className="text-secondary">
+                    Already have an account? {" "}
                     <Link
-                      to="/login"
-                      className="text-decoration-none"
-                      style={{ color: "#332D56", fontWeight: "600" }}
+                      to = "/login"
+                      className="text-decoration-none font-color"
                     >
                       Login here
                     </Link>

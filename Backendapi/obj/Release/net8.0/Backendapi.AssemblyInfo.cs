@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Backendapi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d7c279895912d62f334fd90824e7c1045ce512c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dde042cd89ff8714ffc2a6f8f52afe44ac6260e7")]
 [assembly: System.Reflection.AssemblyProductAttribute("Backendapi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Backendapi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

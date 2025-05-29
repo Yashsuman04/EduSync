@@ -40,8 +40,13 @@ const CourseDetails = () => {
       );
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to delete assessment");
+        const errorData = await response.json();
+        const errorMessage =
+          errorData.message || errorData.error || "Failed to delete assessment";
+        const detailedError = errorData.innerError
+          ? `\nDetails: ${errorData.innerError}`
+          : "";
+        throw new Error(`${errorMessage}${detailedError}`);
       }
 
       setAssessments(
@@ -52,6 +57,8 @@ const CourseDetails = () => {
     } catch (err) {
       console.error("Error deleting assessment:", err);
       setError(err.message);
+      // Show error in an alert for better visibility
+      alert(`Error deleting assessment: ${err.message}`);
     }
   };
 

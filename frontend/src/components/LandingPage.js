@@ -52,7 +52,10 @@ export default function LandingPage() {
                 EduSync
               </span>
             </h1>
-            <p className="mb-4" style={{ fontSize: "23px", fontWeight: "500" }}>
+            <p
+              className="mb-4 fw-bold"
+              style={{ fontSize: "23px", fontWeight: "500" }}
+            >
               Your personalized platform for managing{" "}
               <span ref={typedRef}></span>
             </p>

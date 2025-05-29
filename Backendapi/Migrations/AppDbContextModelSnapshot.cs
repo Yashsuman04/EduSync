@@ -311,14 +311,14 @@ namespace Backendapi.Migrations
                     b.HasOne("Backendapi.Models.Assessment", "Assessment")
                         .WithMany()
                         .HasForeignKey("AssessmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("FK_StudentAnswer_Assessment");
 
                     b.HasOne("Backendapi.Models.Question", "Question")
                         .WithMany()
                         .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_StudentAnswer_Question");
 
@@ -332,13 +332,14 @@ namespace Backendapi.Migrations
                     b.HasOne("Backendapi.Models.Option", "SelectedOption")
                         .WithMany()
                         .HasForeignKey("SelectedOptionId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("FK_StudentAnswer_Option");
 
                     b.HasOne("Backendapi.Models.User", "Student")
                         .WithMany()
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_StudentAnswer_User");
 

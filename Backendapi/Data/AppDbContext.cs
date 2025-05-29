@@ -178,26 +178,25 @@ public partial class AppDbContext : DbContext
             entity.HasOne(d => d.Question)
                 .WithMany()
                 .HasForeignKey(d => d.QuestionId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_StudentAnswer_Question");
 
             entity.HasOne(d => d.SelectedOption)
                 .WithMany()
                 .HasForeignKey(d => d.SelectedOptionId)
-                .OnDelete(DeleteBehavior.Restrict)
-                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_StudentAnswer_Option");
 
             entity.HasOne(d => d.Assessment)
                 .WithMany()
                 .HasForeignKey(d => d.AssessmentId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_StudentAnswer_Assessment");
 
             entity.HasOne(d => d.Student)
                 .WithMany()
                 .HasForeignKey(d => d.StudentId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_StudentAnswer_User");
         });
 

@@ -40,7 +40,7 @@ namespace finalpracticeproject.Controllers
                 var users = await _context.Users.ToListAsync();
                 _logger.LogInformation($"Retrieved {users.Count} users successfully");
                 _telemetryClient.TrackMetric("UsersRetrieved", users.Count);
-                return users;
+                return Ok(users);
             }
             catch (Exception ex)
             {
@@ -68,7 +68,7 @@ namespace finalpracticeproject.Controllers
                 }
 
                 _logger.LogInformation($"Successfully retrieved user with ID: {id}");
-                return user;
+                return Ok(user);
             }
             catch (Exception ex)
             {

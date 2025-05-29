@@ -232,36 +232,114 @@ namespace Backendapi.Controllers
             {
                 _logger.LogInformation($"Attempting to delete assessment with ID: {id}");
 
-                var assessment = await _context.Assessments
-                    .Include(a => a.Results)
-                    .Include(a => a.Questions)
-                    .FirstOrDefaultAsync(a => a.AssessmentId == id);
-
-                if (assessment == null)
+                // Start a transaction
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
                 {
-                    _logger.LogWarning($"Assessment with ID {id} not found");
-                    _telemetryClient.TrackEvent("AssessmentNotFoundForDeletion", new Dictionary<string, string> { { "AssessmentId", id.ToString() } });
-                    return NotFound(new { message = "Assessment not found" });
+                    // Get the assessment with all related entities
+                    var assessment = await _context.Assessments
+                        .Include(a => a.Questions)
+                            .ThenInclude(q => q.Options)
+                        .Include(a => a.Results)
+                            .ThenInclude(r => r.StudentAnswers)
+                        .FirstOrDefaultAsync(a => a.AssessmentId == id);
+
+                    if (assessment == null)
+                    {
+                        _logger.LogWarning($"Assessment with ID {id} not found");
+                        _telemetryClient.TrackEvent("AssessmentNotFoundForDeletion", new Dictionary<string, string> { { "AssessmentId", id.ToString() } });
+                        return NotFound(new { message = "Assessment not found" });
+                    }
+
+                    _logger.LogInformation($"Found assessment with {assessment.Questions.Count} questions and {assessment.Results.Count} results");
+
+                    // First, get all option IDs from this assessment
+                    var optionIds = assessment.Questions.SelectMany(q => q.Options).Select(o => o.OptionId).ToList();
+
+                    // Find and delete all student answers that reference these options
+                    var studentAnswers = await _context.StudentAnswers
+                        .Where(sa => optionIds.Contains(sa.SelectedOptionId))
+                        .ToListAsync();
+
+                    if (studentAnswers.Any())
+                    {
+                        _logger.LogInformation($"Removing {studentAnswers.Count} student answers that reference options from this assessment");
+                        _context.StudentAnswers.RemoveRange(studentAnswers);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    // Now delete all related entities in the correct order
+                    foreach (var result in assessment.Results)
+                    {
+                        if (result.StudentAnswers.Any())
+                        {
+                            _logger.LogInformation($"Removing {result.StudentAnswers.Count} student answers for result {result.ResultId}");
+                            _context.StudentAnswers.RemoveRange(result.StudentAnswers);
+                        }
+                    }
+
+                    _logger.LogInformation($"Removing {assessment.Results.Count} results");
+                    _context.Results.RemoveRange(assessment.Results);
+                    await _context.SaveChangesAsync();
+
+                    foreach (var question in assessment.Questions)
+                    {
+                        if (question.Options.Any())
+                        {
+                            _logger.LogInformation($"Removing {question.Options.Count} options for question {question.QuestionId}");
+                            _context.Options.RemoveRange(question.Options);
+                        }
+                    }
+
+                    _logger.LogInformation($"Removing {assessment.Questions.Count} questions");
+                    _context.Questions.RemoveRange(assessment.Questions);
+                    await _context.SaveChangesAsync();
+
+                    _logger.LogInformation("Removing assessment");
+                    _context.Assessments.Remove(assessment);
+                    await _context.SaveChangesAsync();
+
+                    // Commit the transaction
+                    await transaction.CommitAsync();
+
+                    _logger.LogInformation($"Successfully deleted assessment with ID: {id}");
+                    _telemetryClient.TrackEvent("AssessmentDeleted", new Dictionary<string, string> { { "AssessmentId", id.ToString() } });
+                    return NoContent();
                 }
-
-                _logger.LogInformation($"Found {assessment.Results.Count} results and {assessment.Questions.Count} questions to delete");
-
-                _context.Assessments.Remove(assessment);
-                await _context.SaveChangesAsync();
-
-                _logger.LogInformation($"Successfully deleted assessment with ID: {id}");
-                _telemetryClient.TrackEvent("AssessmentDeleted", new Dictionary<string, string> { { "AssessmentId", id.ToString() } });
-                return NoContent();
+                catch (Exception ex)
+                {
+                    // Rollback the transaction on error
+                    await transaction.RollbackAsync();
+                    throw; // Re-throw to be caught by outer catch block
+                }
+            }
+            catch (DbUpdateException dbEx)
+            {
+                _logger.LogError(dbEx, $"Database error while deleting assessment {id}: {dbEx.Message}");
+                if (dbEx.InnerException != null)
+                {
+                    _logger.LogError($"Inner exception: {dbEx.InnerException.Message}");
+                    _logger.LogError($"Stack trace: {dbEx.InnerException.StackTrace}");
+                }
+                return StatusCode(500, new
+                {
+                    message = "Database error while deleting assessment",
+                    error = dbEx.Message,
+                    innerError = dbEx.InnerException?.Message,
+                    stackTrace = dbEx.InnerException?.StackTrace
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error deleting assessment with ID: {id}");
+                _logger.LogError($"Stack trace: {ex.StackTrace}");
                 _telemetryClient.TrackException(ex);
                 return StatusCode(500, new
                 {
                     message = "Error deleting assessment",
                     error = ex.Message,
-                    innerError = ex.InnerException?.Message
+                    innerError = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
                 });
             }
         }
