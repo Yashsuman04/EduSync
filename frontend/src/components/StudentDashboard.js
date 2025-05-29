@@ -566,7 +566,31 @@ const StudentDashboard = () => {
       </div>
 
       {/* Available Courses Section */}
-      <AvailableCourses />
+      <AvailableCourses
+        onEnrollSuccess={() => {
+          // Refresh all data when a course is enrolled
+          const loadData = async () => {
+            setLoading(true);
+            try {
+              // Clear the results cache
+              setResultsCache(new Map());
+              const enrolled = await fetchEnrolledCourses();
+              console.log(
+                "Enrolled courses before fetching available:",
+                enrolled
+              );
+              await fetchCourses(enrolled);
+              await fetchAssessmentResults();
+            } catch (err) {
+              console.error("Error loading data:", err);
+              setError(err.message || "Failed to load data");
+            } finally {
+              setLoading(false);
+            }
+          };
+          loadData();
+        }}
+      />
     </div>
   );
 };

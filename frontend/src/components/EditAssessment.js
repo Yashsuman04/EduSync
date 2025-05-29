@@ -211,14 +211,14 @@ const EditAssessment = () => {
 
   return (
     <div className="create-assessment-container mt-4 bg-white font font-color shadow p-4">
-      <h2 className="card-title mb-4">Edit Assessment</h2>
+      <h2 className="card-title mb-4 bold">Edit Assessment</h2>
       <div className="row">
         <div className="col-12">
           <div className="card border-0 shadow-sm bg-white font-color">
             <div className="card-body">
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label htmlFor="title" className="form-label">
+                  <label htmlFor="title" className="form-label bold">
                     Assessment Title
                   </label>
                   <input
@@ -234,7 +234,7 @@ const EditAssessment = () => {
                 </div>
 
                 <div className="mb-3">
-                  <label htmlFor="maxScore" className="form-label">
+                  <label htmlFor="maxScore" className="form-label bold">
                     Maximum Score
                   </label>
                   <input
@@ -286,7 +286,9 @@ const EditAssessment = () => {
                           </div>
 
                           <div className="mb-3">
-                            <label className="form-label">Question Text</label>
+                            <label className="form-label bold">
+                              Question Text
+                            </label>
                             <input
                               type="text"
                               className="form-control custom-input no-focus-shadow"
@@ -303,7 +305,7 @@ const EditAssessment = () => {
                           </div>
 
                           <div className="mb-3">
-                            <label className="form-label">Options</label>
+                            <label className="form-label bold">Options</label>
                             {Array.isArray(question.options) &&
                               question.options.map((option, optionIndex) => (
                                 <div

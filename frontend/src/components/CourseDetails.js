@@ -20,8 +20,17 @@ const CourseDetails = () => {
   const [downloadError, setDownloadError] = useState("");
   const [previewSasUrl, setPreviewSasUrl] = useState("");
   const [showPreview, setShowPreview] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [assessmentToDelete, setAssessmentToDelete] = useState(null);
 
-  const handleDeleteAssessment = async (assessmentId) => {
+  const handleDeleteClick = (assessmentId) => {
+    setAssessmentToDelete(assessmentId);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!assessmentToDelete) return;
+
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -29,7 +38,7 @@ const CourseDetails = () => {
       }
 
       const response = await fetch(
-        `http://localhost:7197/api/Assessments/${assessmentId}`,
+        `http://localhost:7197/api/Assessments/${assessmentToDelete}`,
         {
           method: "DELETE",
           headers: {
@@ -51,15 +60,20 @@ const CourseDetails = () => {
 
       setAssessments(
         assessments.filter(
-          (assessment) => assessment.assessmentId !== assessmentId
+          (assessment) => assessment.assessmentId !== assessmentToDelete
         )
       );
+      setShowDeleteModal(false);
+      setAssessmentToDelete(null);
     } catch (err) {
       console.error("Error deleting assessment:", err);
       setError(err.message);
-      // Show error in an alert for better visibility
-      alert(`Error deleting assessment: ${err.message}`);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+    setAssessmentToDelete(null);
   };
 
   const handleMaterialDownload = async () => {
@@ -568,17 +582,9 @@ const CourseDetails = () => {
                                 </Link>
                                 <button
                                   className="custom-filled"
-                                  onClick={() => {
-                                    if (
-                                      window.confirm(
-                                        "Are you sure you want to delete this assessment?"
-                                      )
-                                    ) {
-                                      handleDeleteAssessment(
-                                        assessment.assessmentId
-                                      );
-                                    }
-                                  }}
+                                  onClick={() =>
+                                    handleDeleteClick(assessment.assessmentId)
+                                  }
                                 >
                                   <i className="bi bi-trash me-2"></i>
                                   Delete
@@ -631,6 +637,77 @@ const CourseDetails = () => {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div
+          className="modal fade show"
+          style={{
+            display: "block",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 1050,
+          }}
+          tabIndex="-1"
+        >
+          <div
+            className="modal-dialog"
+            style={{
+              position: "relative",
+              zIndex: 1051,
+              margin: "1.75rem auto",
+            }}
+          >
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirm Delete</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={handleDeleteCancel}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <p>
+                  Are you sure you want to delete this assessment? This action
+                  cannot be undone.
+                </p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="custom-outline-filled"
+                  onClick={handleDeleteCancel}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="custom-filled"
+                  onClick={handleDeleteConfirm}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            className="modal-backdrop fade show"
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              zIndex: 1040,
+            }}
+          ></div>
+        </div>
+      )}
     </div>
   );
 };

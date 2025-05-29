@@ -13,6 +13,8 @@ const InstructorDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [editingCourse, setEditingCourse] = useState(null);
   const [studentResults, setStudentResults] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [courseToDelete, setCourseToDelete] = useState(null);
   const [newCourse, setNewCourse] = useState({
     title: "",
     description: "",
@@ -421,7 +423,14 @@ const InstructorDashboard = () => {
     }
   };
 
-  const handleDelete = async (courseId) => {
+  const handleDeleteClick = (courseId) => {
+    setCourseToDelete(courseId);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!courseToDelete) return;
+
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -429,7 +438,7 @@ const InstructorDashboard = () => {
       }
 
       const response = await fetch(
-        `http://localhost:7197/api/Courses/${courseId}`,
+        `http://localhost:7197/api/Courses/${courseToDelete}`,
         {
           method: "DELETE",
           headers: {
@@ -444,11 +453,20 @@ const InstructorDashboard = () => {
       }
 
       // Remove the course from the local state
-      setCourses(courses.filter((course) => course.courseId !== courseId));
+      setCourses(
+        courses.filter((course) => course.courseId !== courseToDelete)
+      );
+      setShowDeleteModal(false);
+      setCourseToDelete(null);
     } catch (err) {
       console.error("Error deleting course:", err);
       setError("Failed to delete course. Please try again.");
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+    setCourseToDelete(null);
   };
 
   return (
@@ -612,7 +630,7 @@ const InstructorDashboard = () => {
                           </div>
                         )}
                       </div>
-                      <div className="col-md-7 font-color m-2">
+                      <div className="col-md-8">
                         <h5
                           className="card-title bold"
                           style={{ fontSize: "27px" }}
@@ -633,32 +651,15 @@ const InstructorDashboard = () => {
                           >
                             Create Assessment
                           </Link>
-                          <button
+                          <Link
+                            to={`/edit-course/${course.courseId}`}
                             className="custom-outline-filled me-2"
-                            onClick={() => {
-                              setEditingCourse(course);
-                              setNewCourse({
-                                title: course.title,
-                                description: course.description,
-                                mediaUrl: course.mediaUrl || "",
-                                courseUrl: course.courseUrl || "",
-                              });
-                              setShowForm(true);
-                            }}
                           >
                             Edit
-                          </button>
+                          </Link>
                           <button
                             className="custom-outline-filled"
-                            onClick={() => {
-                              if (
-                                window.confirm(
-                                  "Are you sure you want to delete this course?"
-                                )
-                              ) {
-                                handleDelete(course.courseId);
-                              }
-                            }}
+                            onClick={() => handleDeleteClick(course.courseId)}
                           >
                             Delete
                           </button>
@@ -678,6 +679,77 @@ const InstructorDashboard = () => {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div
+          className="modal fade show"
+          style={{
+            display: "block",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 1050,
+          }}
+          tabIndex="-1"
+        >
+          <div
+            className="modal-dialog"
+            style={{
+              position: "relative",
+              zIndex: 1051,
+              margin: "1.75rem auto",
+            }}
+          >
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirm Delete</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={handleDeleteCancel}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <p>
+                  Are you sure you want to delete this course? This action
+                  cannot be undone.
+                </p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="custom-outline-filled"
+                  onClick={handleDeleteCancel}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="custom-filled"
+                  onClick={handleDeleteConfirm}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            className="modal-backdrop fade show"
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              zIndex: 1040,
+            }}
+          ></div>
+        </div>
+      )}
     </div>
   );
 };

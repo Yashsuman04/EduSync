@@ -33,6 +33,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import AvailabeAssessment from "./components/AvailableAssessments";
 import CreateCourseForm from "./components/CreateCourseForm";
+import EditCourse from "./components/EditCourse";
 
 // Role-based Protected Route component
 const RoleProtectedRoute = ({ children, allowedRoles }) => {
@@ -226,6 +227,16 @@ function App() {
             <Route
               path="/edit-assessment/:assessmentId"
               element={<EditAssessment />}
+            />
+            <Route
+              path="/edit-course/:courseId"
+              element={
+                <RoleProtectedRoute allowedRoles={[ROLES.INSTRUCTOR]}>
+                  <Layout>
+                    <EditCourse />
+                  </Layout>
+                </RoleProtectedRoute>
+              }
             />
             {/* Default route - redirect based on authentication status */}
             <Route
