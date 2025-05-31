@@ -258,32 +258,31 @@ const StudentDashboard = () => {
               console.log("Found cached result IDs:", resultIds);
               for (const resultId of resultIds) {
                 if (!resultsMap.has(resultId)) {
-                  try {
-                    const resultResponse = await fetch(
-                      `${
-                        config.API_BASE_URL
-                      }${config.API_ENDPOINTS.RESULTS.GET_BY_ID(resultId)}`,
-                      {
-                        headers: {
-                          Authorization: `Bearer ${token}`,
-                          "Content-Type": "application/json",
-                          Accept: "application/json",
-                        },
-                      }
-                    );
-
-                    if (resultResponse.ok) {
-                      const result = await resultResponse.json();
-                      const mappedResult = {
-                        ...result,
-                        assessmentTitle: assessment.title,
-                        maxScore: assessment.maxScore,
-                      };
-                      resultsMap.set(resultId, mappedResult);
-                    }
-                  } catch (err) {
-                    console.error(Error`fetching result ${resultId}:, err`);
-                  }
+                  // try {
+                  //   const resultResponse = await fetch(
+                  //     `${
+                  //       config.API_BASE_URL
+                  //     }${config.API_ENDPOINTS.RESULTS.GET_BY_ID(resultId)}`,
+                  //     {
+                  //       headers: {
+                  //         Authorization: `Bearer ${token}`,
+                  //         "Content-Type": "application/json",
+                  //         Accept: "application/json",
+                  //       },
+                  //     }
+                  //   );
+                  //   if (resultResponse.ok) {
+                  //     const result = await resultResponse.json();
+                  //     const mappedResult = {
+                  //       ...result,
+                  //       assessmentTitle: assessment.title,
+                  //       maxScore: assessment.maxScore,
+                  //     };
+                  //     resultsMap.set(resultId, mappedResult);
+                  //   }
+                  // } catch (err) {
+                  //   console.error(Error`fetching result ${resultId}:, err`);
+                  // }
                 }
               }
             }

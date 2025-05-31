@@ -186,9 +186,6 @@ const CourseDetails = () => {
         const attempts = {};
         for (const assessment of processedAssessments) {
           try {
-            console.log(
-              `Fetching results for assessment ${assessment.assessmentId}`
-            );
             const resultsResponse = await fetch(
               `http://localhost:7197/api/Results/student/${user.userId}/assessment/${assessment.assessmentId}`,
               {
@@ -199,43 +196,34 @@ const CourseDetails = () => {
               }
             );
 
-            if (resultsResponse.ok) {
-              const results = await resultsResponse.json();
-              console.log(
-                `Results for assessment ${assessment.assessmentId}:`,
-                results
-              );
-
-              // Check if results is an array or has $values property
-              const processedResults = Array.isArray(results)
-                ? results
-                : results.$values && Array.isArray(results.$values)
-                ? results.$values
-                : results
-                ? [results]
-                : [];
-
-              attempts[assessment.assessmentId] = processedResults.length;
-              console.log(
-                `Attempts for assessment ${assessment.assessmentId}:`,
-                attempts[assessment.assessmentId]
-              );
-            } else {
-              console.log(
-                `No results found for assessment ${assessment.assessmentId}`
-              );
+            if (resultsResponse.status === 404) {
+              // If no results found, set attempts to 0 and continue
               attempts[assessment.assessmentId] = 0;
+              continue;
             }
+
+            if (!resultsResponse.ok) {
+              throw new Error(
+                `Failed to fetch results: ${resultsResponse.status}`
+              );
+            }
+
+            const results = await resultsResponse.json();
+            const processedResults = Array.isArray(results)
+              ? results
+              : results.$values && Array.isArray(results.$values)
+              ? results.$values
+              : results
+              ? [results]
+              : [];
+
+            attempts[assessment.assessmentId] = processedResults.length;
           } catch (err) {
-            console.error(
-              `Error fetching results for assessment ${assessment.assessmentId}:`,
-              err
-            );
+            // Silently handle errors and set attempts to 0
             attempts[assessment.assessmentId] = 0;
           }
         }
 
-        console.log("Final attempts object:", attempts);
         setAssessmentAttempts(attempts);
       } catch (err) {
         console.error("Error fetching course details:", err);

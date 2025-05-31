@@ -430,6 +430,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import config from "../config";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "../styles/Course.css";
 
 const ViewAssessmentResult = () => {
   const { resultId } = useParams();

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Backendapi.Models;
+﻿using Backendapi.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backendapi.Data;

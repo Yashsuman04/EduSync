@@ -148,9 +148,6 @@ public class AuthController : ControllerBase
         catch (Exception ex)
         {
             _telemetryClient.TrackException(ex);
-            // Log the exception details
-            Console.WriteLine($"Login error: {ex.Message}");
-            Console.WriteLine($"Stack trace: {ex.StackTrace}");
             return BadRequest("An error occurred during login. Please try again.");
         }
     }
@@ -171,7 +168,7 @@ public class AuthController : ControllerBase
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.Now.AddDays(1),
+            expires: DateTime.Now.AddMinutes(3),
             signingCredentials: creds
         );
 

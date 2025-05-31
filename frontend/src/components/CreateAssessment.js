@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import config from "../config";
-import "../styles/Course.css";
+import "./Course.css";
 import "./common.css";
 
 const CreateAssessment = () => {
